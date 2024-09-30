@@ -1,10 +1,10 @@
 {
   "name": "npm-test-package",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "This is test package",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "rollup": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -14,14 +14,26 @@
     "-"
   ],
   "author": "Pavlo Ustymenko",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/ustymenkopavlodevima/npm-test-package/issues"
   },
   "homepage": "https://github.com/ustymenkopavlodevima/npm-test-package#readme",
+  "license": "ISC",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-typescript": "^12.1.0",
     "@types/react": "^18.3.10",
-    "react": "^18.3.1",
+    "rollup": "^4.22.5",
+    "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "tslib": "^2.7.0",
     "typescript": "^5.6.2"
-  }
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts"
 }
