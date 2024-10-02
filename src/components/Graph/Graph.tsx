@@ -1,7 +1,9 @@
-import React from "react";
+// import React from "react";
 
-function Graph() {
-  return <div></div>;
+import React = require("react");
+
+function Graph(): React.ReactElement {
+  return <div>Graph</div>;
 }
 
 export default Graph;
