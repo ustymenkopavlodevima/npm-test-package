@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import CytoscapeComponent from "react-cytoscapejs";
 import cytoscape from "cytoscape";
 import dagre from "cytoscape-dagre";

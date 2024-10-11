@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { ZoomInIcon } from "../icons/ZoomInIcon";
 import { default as FitIcon } from "../icons/FitIcon";
 import { default as ZoomOutIcon } from "../icons/ZoomOutIcon";
