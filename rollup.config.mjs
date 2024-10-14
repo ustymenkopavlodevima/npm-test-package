@@ -1,68 +1,99 @@
-import { readFileSync } from "fs";
-import { defineConfig } from "rollup";
+import filesize from "rollup-plugin-filesize";
+import postcss from "rollup-plugin-postcss";
+import dts from "rollup-plugin-dts";
+
 import resolve from "@rollup/plugin-node-resolve";
+import terser from "@rollup/plugin-terser";
+import replace from "@rollup/plugin-replace";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
-import external from "rollup-plugin-peer-deps-external";
-import babel from "@rollup/plugin-babel";
-// import postcss from "rollup-plugin-postcss";
-import dts from "rollup-plugin-dts";
-import typescriptEngine from "typescript";
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
 
-const packageJson = JSON.parse(readFileSync("./package.json"));
+const external = /node_modules/;
 
-export default defineConfig(
+const config = [
   {
-    input: "./src/index.ts",
+    input: "src/index.ts",
     output: [
       {
-        file: packageJson.main,
-        format: "iife",
-        sourcemap: false,
-        exports: "named",
-        name: "devname",
-      },
-      {
-        file: packageJson.module,
+        file: "dist/esm/index.js",
         format: "esm",
-        exports: "named",
-        sourcemap: false,
+        sourcemap: true,
       },
     ],
     plugins: [
-      // postcss({
-      //   plugins: [],
-      //   minimize: true,
-      // }),
-      external({ includeDependencies: true }),
-      resolve({ preferBuiltins: false }),
+      peerDepsExternal(),
       commonjs(),
+      postcss(),
+      resolve(),
+      typescript({ tsconfig: "./tsconfig.json" }),
+      filesize(),
+    ],
+    external,
+  },
+  {
+    input: "src/Graph/renderGraph.tsx",
+    output: [
+      {
+        file: "dist/esmRenderGraph/renderGraph.js",
+        format: "esm",
+        sourcemap: true,
+      },
+    ],
+    plugins: [
+      peerDepsExternal(),
+      commonjs(),
+      postcss(),
+      resolve(),
       typescript({
         tsconfig: "./tsconfig.json",
-        typescript: typescriptEngine,
-        sourceMap: false,
-        exclude: ["config", "dist", "node_modules/**"],
+        outDir: "dist/esmRenderGraph/",
       }),
-      babel({
-        babelHelpers: "bundled",
-        presets: [
-          "@babel/preset-typescript",
-          "@babel/preset-react",
-          [
-            "@babel/preset-env",
-            {
-              targets: "defaults",
-            },
-          ],
-        ],
-        extensions: [".ts", ".tsx"],
-      }),
+      filesize(),
     ],
-  }
-  // {
-  //   input: "dist/esm/types/src/index.d.ts",
-  //   output: [{ file: "dist/index.d.ts", format: "esm" }],
-  //   external: [/\.(sc|sa|c)ss$/],
-  //   plugins: [dts()],
-  // }
-);
+    external,
+  },
+  {
+    input: "dist/esmRenderGraph/renderGraph.js",
+    output: [
+      {
+        file: "dist/umd/index.js",
+        format: "umd",
+        name: "DeploymentGraph",
+        esModule: false,
+        exports: "named",
+        sourcemap: true,
+        globals: {
+          react: "React",
+          "react-dom/client": "ReactDOM",
+        },
+      },
+    ],
+    plugins: [
+      postcss(),
+      resolve({
+        browser: true,
+        dedupe: ["react", "react-dom/client"],
+        extensions: [".js", ".jsx"],
+      }),
+      replace({
+        "process.env.NODE_ENV": JSON.stringify("production"),
+        preventAssignment: true,
+      }),
+      commonjs({
+        defaultIsModuleExports: true,
+        include: ["node_modules/**"],
+      }),
+      terser(),
+      filesize(),
+    ],
+  },
+  {
+    input: "dist/esm/index.d.ts",
+    output: [{ file: "dist/index.d.ts", format: "esm" }],
+    external: [/\.scss$/],
+    plugins: [dts()],
+  },
+];
+
+export default config;
