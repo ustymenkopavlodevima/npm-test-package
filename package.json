@@ -1,6 +1,6 @@
 {
   "name": "@pustdevima/npm-test-package",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "This is test package",
   "scripts": {
     "rollup": "rollup -c",
