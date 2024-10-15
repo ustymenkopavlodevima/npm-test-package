@@ -4,3 +4,4 @@ package-lock.json
 .gitignore
 rollup.config.mjs
 tsconfig.json
+post-build.sh
