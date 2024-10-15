@@ -1,7 +1,6 @@
 import filesize from "rollup-plugin-filesize";
-import postcss from "rollup-plugin-postcss";
 import dts from "rollup-plugin-dts";
-
+import sass from "rollup-plugin-sass";
 import resolve from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
 import replace from "@rollup/plugin-replace";
@@ -24,7 +23,7 @@ const config = [
     plugins: [
       peerDepsExternal(),
       commonjs(),
-      postcss(),
+      sass({ output: true }),
       resolve(),
       typescript({ tsconfig: "./tsconfig.json" }),
       filesize(),
@@ -32,29 +31,7 @@ const config = [
     external,
   },
   {
-    input: "src/Graph/renderGraph.tsx",
-    output: [
-      {
-        file: "dist/esmRenderGraph/renderGraph.js",
-        format: "esm",
-        sourcemap: true,
-      },
-    ],
-    plugins: [
-      peerDepsExternal(),
-      commonjs(),
-      postcss(),
-      resolve(),
-      typescript({
-        tsconfig: "./tsconfig.json",
-        outDir: "dist/esmRenderGraph/",
-      }),
-      filesize(),
-    ],
-    external,
-  },
-  {
-    input: "dist/esmRenderGraph/renderGraph.js",
+    input: "src/Graph/exportRenderGraph.tsx",
     output: [
       {
         file: "dist/umd/index.js",
@@ -70,7 +47,8 @@ const config = [
       },
     ],
     plugins: [
-      postcss(),
+      typescript({ tsconfig: "./tsconfig.json", outDir: "dist/umd" }),
+      sass({ output: true }),
       resolve({
         browser: true,
         dedupe: ["react", "react-dom/client"],
