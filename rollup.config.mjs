@@ -44,9 +44,9 @@ const config = [
         },
       },
     ],
+    external: [/\.scss$/],
     plugins: [
       typescript({ tsconfig: "./tsconfig.json", outDir: "dist/umd" }),
-      sass({ output: true }),
       resolve({
         browser: true,
         dedupe: ["react", "react-dom/client"],
