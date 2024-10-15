@@ -34,7 +34,7 @@ const config = [
       {
         file: "dist/umd/index.js",
         format: "umd",
-        name: "DeploymentGraph",
+        name: "DAG",
         esModule: false,
         exports: "named",
         sourcemap: true,
