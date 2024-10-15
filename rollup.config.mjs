@@ -1,4 +1,3 @@
-import filesize from "rollup-plugin-filesize";
 import dts from "rollup-plugin-dts";
 import sass from "rollup-plugin-sass";
 import resolve from "@rollup/plugin-node-resolve";
@@ -26,7 +25,6 @@ const config = [
       sass({ output: true }),
       resolve(),
       typescript({ tsconfig: "./tsconfig.json" }),
-      filesize(),
     ],
     external,
   },
@@ -63,7 +61,6 @@ const config = [
         include: ["node_modules/**"],
       }),
       terser(),
-      filesize(),
     ],
   },
   {

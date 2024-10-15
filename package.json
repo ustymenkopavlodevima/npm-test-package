@@ -38,7 +38,6 @@
     "release-it": "^17.8.2",
     "rollup": "^4.24.0",
     "rollup-plugin-dts": "^6.1.1",
-    "rollup-plugin-filesize": "^10.0.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-sass": "^1.13.2",
     "sass": "^1.79.5",
