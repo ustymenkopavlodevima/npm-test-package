@@ -1,6 +1,6 @@
 import React from "react";
 import CytoscapeComponent from "react-cytoscapejs";
-import cytoscape from "cytoscape";
+import cytoscape, { NodeDefinition } from "cytoscape";
 import dagre from "cytoscape-dagre";
 import "./index.scss";
 import SideInfo from "./components/SideInfo";
@@ -85,6 +85,18 @@ function Graph({ nodes }: GraphProps): React.ReactElement {
 
   const handleClose = React.useCallback(() => setSelectedNode(undefined), []);
 
+  const handleSearch = React.useCallback(
+    (searchQuery: string) => {
+      cy?.nodes().forEach((node) => {
+        const label = node.data("name").toLowerCase();
+        if (label.includes(searchQuery.toLowerCase())) {
+          node.removeClass("semitransp");
+        } else node.addClass("semitransp");
+      });
+    },
+    [cy]
+  );
+
   return (
     <>
       <CytoscapeComponent
@@ -108,12 +120,13 @@ function Graph({ nodes }: GraphProps): React.ReactElement {
               label: "data(name)",
               "text-valign": "center",
               "text-halign": "center",
-              width: "label",
+              width: (node: cytoscape.NodeSingular) => {
+                return node.data("name").length * 10;
+              },
               "padding-top": "10px",
               "padding-bottom": "10px",
-              "padding-left": "10px",
+              "padding-left": "15px",
               "padding-right": "10px",
-              height: "label",
               "background-color": function (node) {
                 return stageColors.get(node.data("stage"));
               },
@@ -158,6 +171,10 @@ function Graph({ nodes }: GraphProps): React.ReactElement {
               shape: "tag",
             },
           },
+          {
+            selector: "node.semitransp",
+            style: { opacity: "0.5" },
+          },
         ]}
       />
       {cy && (
@@ -165,6 +182,7 @@ function Graph({ nodes }: GraphProps): React.ReactElement {
           cy={cy}
           stageColors={stageColors}
           backgroundColors={backgroundColors}
+          handleSearch={handleSearch}
         />
       )}
       {selectedNode && (

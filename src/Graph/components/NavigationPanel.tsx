@@ -8,12 +8,14 @@ type NavigationPanelProps = {
   cy: cytoscape.Core;
   stageColors: Map<any, any>;
   backgroundColors: string[];
+  handleSearch: (searchQuery: string) => void;
 };
 
 export const NavigationPanel = ({
   cy,
   backgroundColors,
   stageColors,
+  handleSearch,
 }: NavigationPanelProps) => {
   const zoomIn = () => {
     cy?.zoom({
@@ -60,7 +62,11 @@ export const NavigationPanel = ({
           <ZoomOutIcon />
         </div>
         <div id="navigation-search">
-          <input type="text" id="navigation-search-input" />
+          <input
+            type="text"
+            id="navigation-search-input"
+            onChange={(event) => handleSearch(event.target.value)}
+          />
           <SearchIcon />
         </div>
       </div>
