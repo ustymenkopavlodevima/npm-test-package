@@ -2,6 +2,7 @@
   "name": "@pustdevima/npm-test-package",
   "version": "1.2.0",
   "description": "This is test package",
+  "type": "module",
   "scripts": {
     "rollup": "rollup -c && sh post-build.sh",
     "release": "release-it"
