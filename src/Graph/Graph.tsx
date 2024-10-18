@@ -1,6 +1,5 @@
 import React from "react";
-import CytoscapeComponent from "react-cytoscapejs";
-import cytoscape, { NodeDefinition } from "cytoscape";
+import cytoscape from "cytoscape";
 import dagre from "cytoscape-dagre";
 import "./index.scss";
 import SideInfo from "./components/SideInfo";
@@ -52,13 +51,6 @@ function Graph({ nodes }: GraphProps): React.ReactElement {
   const [selectedNode, setSelectedNode] =
     React.useState<cytoscape.EventObject>();
 
-  React.useEffect(() => {
-    if (!cy) return;
-    cy.on("tap", "node", (event: cytoscape.EventObject) => {
-      setSelectedNode(event);
-    });
-  }, [cy]);
-
   const cyNodes = React.useMemo(
     () =>
       nodes.map(function (node) {
@@ -76,6 +68,86 @@ function Graph({ nodes }: GraphProps): React.ReactElement {
       ),
     []
   );
+
+  React.useEffect(() => {
+    const cyInstance = cytoscape({
+      container: document.getElementById("cy"),
+      layout: { name: "dagre" },
+      elements: {
+        nodes: cyNodes,
+        edges: cyEdges,
+      },
+      style: [
+        {
+          selector: "node",
+          style: {
+            "font-weight": "bold",
+            label: "data(name)",
+            "text-valign": "center",
+            "text-halign": "center",
+            width: (node: cytoscape.NodeSingular) => {
+              return node.data("name").length * 10;
+            },
+            "padding-top": "10px",
+            "padding-bottom": "10px",
+            "padding-left": "15px",
+            "padding-right": "10px",
+            "background-color": function (node: cytoscape.NodeSingular) {
+              return stageColors.get(node.data("stage"));
+            },
+          },
+        },
+        {
+          selector: "edge",
+          style: {
+            "curve-style": "bezier",
+            "target-arrow-shape": "triangle",
+          },
+        },
+        {
+          selector: 'node[type="stream"]',
+          style: {
+            shape: "roundrectangle",
+          },
+        },
+        {
+          selector: 'node[type="state"]',
+          style: {
+            shape: "rectangle",
+          },
+        },
+        {
+          selector: 'node[type="relation"]',
+          style: {
+            shape: "cut-rectangle",
+          },
+        },
+        {
+          selector: 'node[type="import"], node[type="export"]',
+          style: {
+            "font-weight": "normal",
+            shape: "ellipse",
+          },
+        },
+        {
+          selector: 'node[type="query"]',
+          style: {
+            "font-weight": "normal",
+            shape: "tag",
+          },
+        },
+        {
+          selector: "node.semitransp",
+          //@ts-expect-error works
+          style: { opacity: "0.5" },
+        },
+      ],
+    });
+    cyInstance.on("tap", "node", (event: cytoscape.EventObject) => {
+      setSelectedNode(event);
+    });
+    setCy(cyInstance);
+  }, [cyEdges, cyNodes]);
 
   nodes.forEach((node) => {
     if (!stageColors.has(node.stage)) {
@@ -99,84 +171,7 @@ function Graph({ nodes }: GraphProps): React.ReactElement {
 
   return (
     <>
-      <CytoscapeComponent
-        className="cy"
-        cy={(cy) => {
-          setCy(cy);
-        }}
-        layout={{ name: "dagre" }}
-        style={{
-          height: "100%",
-        }}
-        elements={CytoscapeComponent.normalizeElements({
-          nodes: cyNodes,
-          edges: cyEdges,
-        })}
-        stylesheet={[
-          {
-            selector: "node",
-            style: {
-              "font-weight": "bold",
-              label: "data(name)",
-              "text-valign": "center",
-              "text-halign": "center",
-              width: (node: cytoscape.NodeSingular) => {
-                return node.data("name").length * 10;
-              },
-              "padding-top": "10px",
-              "padding-bottom": "10px",
-              "padding-left": "15px",
-              "padding-right": "10px",
-              "background-color": function (node) {
-                return stageColors.get(node.data("stage"));
-              },
-            },
-          },
-          {
-            selector: "edge",
-            style: {
-              "curve-style": "bezier",
-              "target-arrow-shape": "triangle",
-            },
-          },
-          {
-            selector: 'node[type="stream"]',
-            style: {
-              shape: "roundrectangle",
-            },
-          },
-          {
-            selector: 'node[type="state"]',
-            style: {
-              shape: "rectangle",
-            },
-          },
-          {
-            selector: 'node[type="relation"]',
-            style: {
-              shape: "cut-rectangle",
-            },
-          },
-          {
-            selector: 'node[type="import"], node[type="export"]',
-            style: {
-              "font-weight": "normal",
-              shape: "ellipse",
-            },
-          },
-          {
-            selector: 'node[type="query"]',
-            style: {
-              "font-weight": "normal",
-              shape: "tag",
-            },
-          },
-          {
-            selector: "node.semitransp",
-            style: { opacity: "0.5" },
-          },
-        ]}
-      />
+      <div id="cy" />
       {cy && (
         <NavigationPanel
           cy={cy}
