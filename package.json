@@ -1,6 +1,6 @@
 {
   "name": "@pustdevima/npm-test-package",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "This is test package",
   "type": "module",
   "scripts": {
