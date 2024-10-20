@@ -28,7 +28,7 @@ export const NavigationPanel = ({
   };
 
   const zoomOut = () => {
-    cy?.zoom({
+    cy.zoom({
       level: cy.zoom() - 0.1,
       renderedPosition: {
         x: window.innerWidth / 2,
@@ -37,7 +37,7 @@ export const NavigationPanel = ({
     });
   };
 
-  const fit = () => cy?.fit();
+  const fit = () => cy.fit();
   return (
     <div className="navigation">
       <div id="streams">

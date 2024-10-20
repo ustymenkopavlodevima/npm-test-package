@@ -95,8 +95,8 @@ const SideInfo = ({ event, handleClose }: SideInfoProps) => {
                   generateTableField(field, node)
                 )}
             </ul>
-            <div className="sideinfo-section" onClick={togglePlan}>
-              <h3 id="plan-button">
+            <div className="sideinfo-section">
+              <h3 id="plan-button" onClick={togglePlan}>
                 <ArrowDownIcon />
                 <strong>Physical Plan</strong>
               </h3>
